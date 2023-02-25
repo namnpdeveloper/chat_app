@@ -3,6 +3,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'auth_screen.dart';
 
 class ChatScreen extends StatelessWidget {
   @override
@@ -17,15 +20,9 @@ class ChatScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
-          FirebaseFirestore.instance
-              .collection('/chats/6Cae2rI6R2j9FWSsXmM5/messages')
-          .snapshots().listen((event) {
-            event.docs.forEach((element) {
-              print(element['text']);
-            });
-          });
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AuthScreen()));
         },
       ),
     );
