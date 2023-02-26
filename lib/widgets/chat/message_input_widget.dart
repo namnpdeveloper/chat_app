@@ -1,5 +1,6 @@
 import 'package:chat_app/common/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MessageInputWidget extends StatefulWidget {
@@ -12,13 +13,19 @@ class MessageInputWidget extends StatefulWidget {
 class _MessageInputWidgetState extends State<MessageInputWidget> {
   var _inputMessage = '';
   final _messageController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+
+  User? get _user => _auth.currentUser;
 
   _sendMessage() {
     FocusScope.of(context).unfocus();
-    _messageController.text = '';
+    _messageController.clear();
     FirebaseFirestore.instance.collection(ChatConstants.chatCollection).add({
       ChatConstants.text: _inputMessage,
       ChatConstants.createdAt: Timestamp.now(),
+      ChatConstants.userId: _user?.uid,
+      ChatConstants.userName: _user?.displayName,
+      ChatConstants.userAvatar: _user?.photoURL,
     });
   }
 
