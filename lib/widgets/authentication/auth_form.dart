@@ -30,9 +30,8 @@ class _AuthFormState extends State<AuthForm> {
   var _userPassword = '';
 
   void _trySubmit() {
-    final isValid = _formKey.currentState?.validate();
     FocusScope.of(context).unfocus();
-
+    final isValid = _formKey.currentState?.validate();
 
     if (isValid == true) {
       _formKey.currentState?.save();
@@ -50,10 +49,10 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        margin: EdgeInsets.all(20),
+        margin:const  EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             child: Form(
               key: _formKey,
               child: Column(
