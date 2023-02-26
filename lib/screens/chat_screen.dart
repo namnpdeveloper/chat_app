@@ -1,7 +1,6 @@
 import 'package:chat_app/widgets/chat/message_input_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../widgets/chat/list_messages_widget.dart';
@@ -24,15 +23,12 @@ class _ChatScreenState extends State<ChatScreen> {
     fbm.getInitialMessage().then((value) {
       debugPrint('getInitialMessage $value');
     });
-    FirebaseMessaging.onMessage.listen(_showFlutterNotification);
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessage.listen(_showFlutterNotification); // onMessage (When App In Foreground)
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) { // onLaunch (when CLINK Notifications - BG/terminated)
       debugPrint('onMessageOpenedApp $message');
+      return;
     });
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    if (!kIsWeb) {
-      _setupFlutterNotifications();
-    }
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler); // onResume (When App In BG/terminated)
     fbm.subscribeToTopic('chat');
   }
 
@@ -50,8 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
     channel = const AndroidNotificationChannel(
       'channel_id',
       'Notification Title',
-      description:
-      'This channel is used for important notifications.',
+      description: 'This channel is used for important notifications.',
       importance: Importance.high,
     );
 
@@ -71,7 +66,10 @@ class _ChatScreenState extends State<ChatScreen> {
     isFlutterLocalNotificationsInitialized = true;
   }
 
-  void _showFlutterNotification(RemoteMessage message) {
+  void _showFlutterNotification(RemoteMessage message) async {
+    if(!isFlutterLocalNotificationsInitialized) {
+      await _setupFlutterNotifications();
+    }
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
     if (notification != null && android != null) {
