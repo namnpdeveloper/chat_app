@@ -1,6 +1,7 @@
+import 'package:chat_app/widgets/chat/message_input_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'auth_screen.dart';
+import '../widgets/chat/list_messages_widget.dart';
 
 class ChatScreen extends StatelessWidget {
   @override
@@ -35,19 +36,15 @@ class ChatScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Container(
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            return Text('OK');
-          },
-          itemCount: 10,
+      body: SafeArea(
+        child: Column(
+          children: const [
+            Expanded(
+              child: MessagesWidget(),
+            ),
+            MessageInputWidget(),
+          ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AuthScreen()));
-        },
       ),
     );
   }
