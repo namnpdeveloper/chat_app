@@ -1,3 +1,5 @@
+import 'package:chat_app/common/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/message.dart';
 
@@ -41,14 +43,22 @@ class MessageItemWidget extends StatelessWidget {
                 crossAxisAlignment:
                 message.isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    message.sender.name ?? '',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: message.isMine
-                          ? Colors.black
-                          : Theme.of(context).primaryColor,
-                    ),
+                  FutureBuilder(
+                    future: FirebaseFirestore.instance.collection(ChatConstants.userCollection).doc(message.sender.id).get(),
+                    builder: (_, snapshot) {
+                      // if(snapshot.connectionState == ConnectionState.waiting) {
+                      //   return const Text('Loading...');
+                      // }
+                      return Text(
+                        message.sender.name ?? '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: message.isMine
+                              ? Colors.black
+                              : Colors.white,
+                        ),
+                      );
+                    }
                   ),
                   Text(
                     message.text,

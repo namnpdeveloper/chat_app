@@ -17,15 +17,16 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
 
   User? get _user => _auth.currentUser;
 
-  _sendMessage() {
+  _sendMessage() async {
     FocusScope.of(context).unfocus();
     _messageController.clear();
+    final userData = await FirebaseFirestore.instance.collection('users').doc(_user?.uid).get();
     FirebaseFirestore.instance.collection(ChatConstants.chatCollection).add({
       ChatConstants.text: _inputMessage,
       ChatConstants.createdAt: Timestamp.now(),
       ChatConstants.userId: _user?.uid,
-      ChatConstants.userName: _user?.displayName,
-      ChatConstants.userAvatar: _user?.photoURL,
+      ChatConstants.userName: userData[ChatConstants.userName],
+      ChatConstants.userAvatar: userData[ChatConstants.userAvatar],
     });
   }
 
